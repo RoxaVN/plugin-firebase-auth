@@ -31,3 +31,9 @@ const Page = () => {
 
 export default Page;
 ```
+
+## Release
+
+```
+npx standard-version
+```
