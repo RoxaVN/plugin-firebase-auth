@@ -68,7 +68,6 @@ export const ApiFirebaseAuth = ({
         }}
         firebaseAuth={app}
       />
-      ;
     </Box>
   ) : (
     <Fragment />
