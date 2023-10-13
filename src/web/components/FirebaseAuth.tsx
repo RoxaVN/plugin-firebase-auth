@@ -15,19 +15,20 @@ export interface FirebaseAuthProps {
   // The Firebase App auth instance to use.
   firebaseAuth: any; // As firebaseui-web
 
-  className?: string;
+  stylesheetUrl?: string;
 }
 
 export const FirebaseAuth = ({
   uiConfig,
   firebaseAuth,
-  className,
   uiCallback,
+  stylesheetUrl,
 }: FirebaseAuthProps) => {
   const [userSignedIn, setUserSignedIn] = useState(false);
   const elementRef = useRef<any>(null);
   const loadedStylesheet = useStylesheet(
-    'https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.css'
+    stylesheetUrl ||
+      'https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.css'
   );
 
   const load = async () => {
@@ -61,5 +62,5 @@ export const FirebaseAuth = ({
     loadedStylesheet && load();
   }, [uiConfig, loadedStylesheet]);
 
-  return <div className={className} ref={elementRef} />;
+  return <div ref={elementRef} />;
 };

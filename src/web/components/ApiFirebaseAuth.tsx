@@ -14,6 +14,7 @@ export interface ApiFirebaseAuthProps {
     projectId: string;
   };
   uiConfig: FirebaseAuthProps['uiConfig'];
+  stylesheetUrl?: string;
   onSuccess?: (
     data: InferApiResponse<typeof identityApi.authAndRegister>
   ) => void;
@@ -22,6 +23,7 @@ export interface ApiFirebaseAuthProps {
 export const ApiFirebaseAuth = ({
   firebaseConfig,
   uiConfig,
+  stylesheetUrl,
   onSuccess,
 }: ApiFirebaseAuthProps) => {
   const [app, setApp] = useState<firebase.auth.Auth>();
@@ -66,6 +68,7 @@ export const ApiFirebaseAuth = ({
             },
           },
         }}
+        stylesheetUrl={stylesheetUrl}
         firebaseAuth={app}
       />
     </Box>
