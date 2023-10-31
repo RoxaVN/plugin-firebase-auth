@@ -1,6 +1,6 @@
 import { Box, LoadingOverlay } from '@mantine/core';
 import { InferApiResponse } from '@roxavn/core/base';
-import { authService, useApi } from '@roxavn/core/web';
+import { apiFetcher, authService, uiManager } from '@roxavn/core/web';
 import firebase from 'firebase/compat/app';
 import { Fragment, useEffect, useState } from 'react';
 import { identityApi } from '../../base/index.js';
@@ -28,13 +28,26 @@ export const ApiFirebaseAuth = ({
 }: ApiFirebaseAuthProps) => {
   const [app, setApp] = useState<firebase.auth.Auth>();
   const [token, setToken] = useState<string>();
-  const { data, loading } = useApi(
-    token ? identityApi.authAndRegister : undefined,
-    {
-      projectId: firebaseConfig.projectId,
-      token: token,
+  const [loading, setLoading] = useState(false);
+
+  async function auth(tokenData?: string) {
+    if (tokenData) {
+      try {
+        setLoading(true);
+        const data = await apiFetcher.fetch(identityApi.authAndRegister, {
+          projectId: firebaseConfig.projectId,
+          token: tokenData,
+        });
+        await authService.authenticate(data);
+        app?.signOut();
+        onSuccess && onSuccess(data);
+      } catch (e: any) {
+        uiManager.errorModal(e);
+      } finally {
+        setLoading(false);
+      }
     }
-  );
+  }
 
   useEffect(() => {
     // Initialize Firebase
@@ -49,12 +62,8 @@ export const ApiFirebaseAuth = ({
   }, []);
 
   useEffect(() => {
-    if (data) {
-      authService.setTokenData(data);
-      app?.signOut();
-      onSuccess && onSuccess(data);
-    }
-  }, [data]);
+    auth(token);
+  }, [token]);
 
   return app ? (
     <Box sx={{ position: 'relative' }}>
